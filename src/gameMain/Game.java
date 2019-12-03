@@ -1,12 +1,18 @@
 package gameMain;
 
 import java.awt.Canvas;
+import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.image.BufferStrategy;
 
 import ai_MachineIntelligence.PathGenerator;
+import characters.AllyPlayer;
+import characters.EnemyPlayer;
+import characters.ExampleAlly;
 import extras.*;
 import graphics.*;
+import tiles.Tile;
 
 public class Game extends Canvas implements Runnable {
 
@@ -29,6 +35,9 @@ public class Game extends Canvas implements Runnable {
 	public PopUpMenu PUM;
 	public PathGenerator pathGenerator;
 	public AttackManager AttackManager;
+	public EnemyPhaseProcessor enemyMove;
+	public boolean inChapDesign = false;
+	
 	
 	public enum STATE {
 		Game,
@@ -37,21 +46,34 @@ public class Game extends Canvas implements Runnable {
 		AdvInfo,
 		PopUpMenu,
 		MoveState,
-		AttackState
+		AttackState,
+		EnemyPhase,
+		LoseGame,
+		ChapterDesign
 	}
 	public STATE gameState = STATE.Game;
 	
-	public Game() {
+	public Game(boolean isChapterDesigner) {
+		if (isChapterDesigner) {
+			inChapDesign = true;
+			this.addKeyListener(new ChapDesignKeyInput(this));
+			new Window(WIDTH, HEIGHT, "Sacred Stones", this);
+			gameState = STATE.ChapterDesign;
+			return;
+		}
 		chapterOrganizer = new ChapterOrganizer(this);
 		timekeep = new TimeKeeper();
 		playerGFX = new PlayerInfoGFX(this);
 		AttackManager = new AttackManager();
+		enemyMove = new EnemyPhaseProcessor(this);
 		this.addKeyListener(new KeyInput(this));
 		new Window(WIDTH, HEIGHT, "Sacred Stones", this);
+		addAlly(new ExampleAlly(2, 0, this));
 	}
 	
 	
 	public void tick() {
+		if (inChapDesign) return;
 		chapterOrganizer.tick();
 		//System.out.println(gameState);
 	}
@@ -73,10 +95,40 @@ public class Game extends Canvas implements Runnable {
 			chapterOrganizer.render(g);
 		} else if (gameState == STATE.AttackState) {
 			chapterOrganizer.render(g);
+		} else if (gameState == STATE.EnemyPhase) {
+			chapterOrganizer.render(g);
+		} else if (gameState == STATE.LoseGame) {
+			renderLoseGame(g);
 		}
 	}
 	
-	
+	public void enemyTurn() {
+		enemyMove.update();
+		for (int i = 0; i < chapterOrganizer.enemys.size(); i++) {
+			EnemyPlayer enemy =  chapterOrganizer.enemys.get(i);
+			Tile dest = enemyMove.getFinalDestinationForEnemy(enemy);
+			if (!dest.isOccupied()) chapterOrganizer.currentMap.move(enemy, dest);
+			lookForKills(enemy);
+			enemy.setMAU(false);
+		}
+	}
+	/**
+	 * Enemy searches around him based on his equipped item's range, if a unit is in range he will Attack
+	 * @param enemy
+	 */
+	public void lookForKills(EnemyPlayer enemy) {
+		for (int i = 0; i < chapterOrganizer.allys.size(); i++) {
+			AllyPlayer ally = chapterOrganizer.allys.get(i);
+			if (getTrueDist(ally.currentTile, enemy.currentTile) <= enemy.equiptItem.range) {
+				AttackManager.Attack(enemy, ally);
+			}
+		}
+	}
+	/** Returns the absolute value of x distance + y distance */
+	public int getTrueDist(Tile a, Tile b) {
+		System.out.println("The true dist: " + (Math.abs(a.x - b.x) + Math.abs(a.y - b.y)));
+		return (Math.abs(a.x - b.x) + Math.abs(a.y - b.y));
+	}
 	
 	public void setGameState(STATE state) {
 		this.gameState = state;
@@ -156,12 +208,28 @@ public class Game extends Canvas implements Runnable {
 		}
 	}
 	public static void main(String[] args) {
-		new Game();
+		new Game(false);
 	}
 	public void setPopUpMenu(PopUpMenu PUM) {
 		this.PUM = PUM;
 	}
 	public void setPathGenerator(PathGenerator PG) {
 		this.pathGenerator = PG;
+	}
+	public void addAlly(AllyPlayer ally) {
+		chapterOrganizer.addAlly(ally);
+	}
+	public void addEnemy(EnemyPlayer enemy) {
+		chapterOrganizer.addEnemy(enemy);
+	}
+	public void loseGame() {
+		gameState = STATE.LoseGame;
+	}
+	public void renderLoseGame(Graphics g) {
+		g.setColor(Color.black);
+		g.fillRect(0, 0, Game.WIDTH, Game.HEIGHT);
+		g.setColor(Color.red);
+		g.setFont(new Font("Times New Roman", Font.BOLD, 55));
+		g.drawString("YOU LOSE", Game.HEIGHT/3 + Game.HEIGHT/11, Game.WIDTH/3 + Game.WIDTH/7);
 	}
 }

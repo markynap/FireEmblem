@@ -62,17 +62,19 @@ public class PathGenerator {
 		currentPath.clear();
 	}
 	
-	public void setTileArrow(Tile t, boolean tf) {
+	public void setTileArrow(Tile t) {
 		if (currentPath.size() > startTile.carrier.MOV) return;
 		if (!t.pathable) return;
-		if (currentPath.contains(t)) {
-			currentPath.remove(t);
-			t.setArrow(false);
-			return;
-		}
-		t.setArrow(tf);
-		if (tf == true) {
-			currentPath.add(t);
+		if (currentPath.contains(t)) return;
+		t.setArrow(true);
+		currentPath.add(t);
+		if (!currentPath.isEmpty()) {
+			currentPath.get(currentPath.size()-1).arrowHead = true;
+			if (currentPath.size() > 1) {
+				for (int i = 0; i < currentPath.size() - 1; i++) {
+					currentPath.get(i).arrowHead = false;
+				}
+			}
 		}
 	}
 	
@@ -81,13 +83,10 @@ public class PathGenerator {
 	}
 	public void drawTilePath(Tile t) {
 		if (Math.abs(t.x - startTile.x) + Math.abs(t.y - startTile.y) > move) return;
-		
-		if (t == startTile) {
-			currentPath.add(t);
-		} else {
-			currentPath.add(t);
+		currentPath.add(t);
+		if (t != startTile) {
 			if (t.isOccupied()) {
-				if (player.teamID.equalsIgnoreCase(t.carrier.teamID)) {
+				if (!player.teamID.equalsIgnoreCase(t.carrier.teamID)) {
 					t.carrier.drawScope = true;
 				}
 			}

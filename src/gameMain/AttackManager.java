@@ -42,8 +42,10 @@ public class AttackManager {
 	public void Attack(Player attacker, Player defender) {
 		clearAll();
 		int distApart = (Math.abs(attacker.xPos - defender.xPos)) + Math.abs(attacker.yPos - defender.yPos);
-		if (distApart > attacker.equiptItem.range)
-			throw new IllegalArgumentException("How did we get to the attack frame if the attacker is out of range!?");
+		if (distApart > attacker.equiptItem.range) {
+			attacker.setMAU(false);
+			return;
+		}
 		boolean canDefend = true; // whether or not the defender has a chance to attack back
 		if (distApart > defender.equiptItem.range) canDefend = false;
 		attackFrequencyData[0] = canDefend;

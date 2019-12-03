@@ -3,9 +3,11 @@ package gameMain;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
+import java.util.ArrayList;
 import java.util.LinkedList;
 
 import characters.Player;
+import gameMain.Game.STATE;
 import tiles.*;
 
 /**
@@ -22,7 +24,7 @@ public class ChapterMap {
 	/** Tiles used to help move about the screen */
 	public Tile topLeft, bottomRight;
 	/** A List of all the tiles in this map */
-	public LinkedList<Tile> tiles;
+	public ArrayList<Tile> tiles;
 	/** Number of rows/columns in this map */
 	public int rows, cols;
 	/** number of rows/cols visible on screen at a given time */
@@ -33,18 +35,22 @@ public class ChapterMap {
 	public int turnCount;
 	public String currentPhase;
 	public Game game;
+	public Tile selectedBoxTile;
 
 	public ChapterMap(int col, int row, Game game) {
 		this.game = game;
-		tiles = new LinkedList<>();
+		tiles = new ArrayList<>();
 		tileMap = new Tile[row][col];
-		this.rows = row;//30 rows
-		this.cols = col;//24 columns
+		this.rows = row;//30 columns
+		this.cols = col;//24 rows
 		for (int i = 0; i < row; i++) {
 			for (int j = 0; j < col; j++) {
-				GrassTile grass = new GrassTile(i, j, this);
+				GrassTile grass = new GrassTile(j, i, this);
 				tileMap[i][j] = grass;
 			}
+		}
+		for (int i = 0; i < tiles.size(); i++) {
+			tiles.get(i).findNeighbors();
 		}
 		currentTile = tileMap[0][0];
 		nrow = Game.nRow; //12
@@ -53,10 +59,11 @@ public class ChapterMap {
 		bottomRight = tileMap[nrow - 1][ncol - 1];
 		turnCount = 1;
 		currentPhase = "AllyPhase";
+		selectedBoxTile = currentTile;
 	}
 
 	public void tick() {
-		
+	
 	}
 	
 	public void move(Player p, Tile destTile) {
@@ -96,7 +103,11 @@ public class ChapterMap {
 			tile.render(g);
 		}
 		drawHUD(g);
+		if (game.gameState == STATE.AttackState || game.gameState == STATE.MoveState) {
+			drawSelectedBoxOnTile(selectedBoxTile, g);
+		} else {
 		drawSelectedBox(g);
+		}
 	}
 	
 	public void drawHUD(Graphics g) {
@@ -123,11 +134,13 @@ public class ChapterMap {
 	 * @param y the true Y position of this tile on the grid
 	 * @return
 	 */
-	public Tile getTileAtAbsolutePos(int x, int y) {
-		if (x < rows && y < cols && x >= 0 && y >= 0)
-			return tileMap[x][y];
-		else
-			return null;
+	public Tile getTileAtAbsolutePos(int col, int row) {
+		for (int i = 0; i < tiles.size(); i++) {
+			Tile t = tiles.get(i);
+			if (t.x == col && t.y == row) return t;
+		}
+		System.out.println("no tile located at " + row + "," + col);
+		return null;
 	}
 
 	/**
@@ -169,7 +182,7 @@ public class ChapterMap {
 		}
 	}
 
-	public void drawSelectedBox(Graphics g) {
+	private void drawSelectedBox(Graphics g) {
 		int thickness = 5;
 		int scale = Game.scale;
 		g.setColor(Color.black);
@@ -321,6 +334,43 @@ public class ChapterMap {
 	/** Sets the existing Tile to be of the type newTile*/
 	public void setTile(Tile existingTile, Tile newTile) {
 		tileMap[existingTile.x][existingTile.y] = newTile;
+	}
+	
+	public void drawSelectedBoxOnTile(Tile currentTile, Graphics g) {
+		int thickness = 5;
+		int scale = Game.scale;
+		g.setColor(Color.black);
+		for (int i = 0; i < thickness; i++) {
+			g.drawLine(currentTile.xPos * scale, currentTile.yPos * scale + i, currentTile.xPos * scale + scale / 4, currentTile.yPos * scale + i); // -
+			g.drawLine(currentTile.xPos * scale + i, currentTile.yPos * scale, currentTile.xPos * scale + i, currentTile.yPos * scale + scale / 4); // |
+			g.drawLine(currentTile.xPos * scale + i, currentTile.yPos * scale + scale, currentTile.xPos * scale + i, currentTile.yPos * scale + 3 * scale / 4); // |
+			g.drawLine(currentTile.xPos * scale, currentTile.yPos * scale + scale - i, currentTile.xPos * scale + scale / 4, currentTile.yPos * scale + scale - i); // -
+			g.drawLine(currentTile.xPos * scale + scale - i, currentTile.yPos * scale, currentTile.xPos * scale + scale - i, currentTile.yPos * scale + scale / 4); // |
+			g.drawLine(currentTile.xPos * scale + scale, currentTile.yPos * scale + i, currentTile.xPos * scale + 3 * scale / 4, currentTile.yPos * scale + i); // -
+			g.drawLine(currentTile.xPos * scale + scale - i, currentTile.yPos * scale + scale, currentTile.xPos * scale + scale - i,
+					currentTile.yPos * scale + 3 * scale / 4); // |
+			g.drawLine(currentTile.xPos * scale + scale, currentTile.yPos * scale + scale - i, currentTile.xPos * scale + 3 * scale / 4,
+					currentTile.yPos * scale + scale - i); // -
+		}
+	}
+	
+	public ArrayList<Tile> getTilesStartingWith(Tile start) {
+		ArrayList<Tile> tilez = new ArrayList<>();
+		int index = 0;
+		for (int i = 0; i < tiles.size(); i++) if (tiles.get(i).equals(start)) index = i;
+		tilez.add(tiles.get(index));
+		for (int i = 0; i < tiles.size(); i++) {
+			if (i == index) continue;
+			tilez.add(tiles.get(i));
+		}
+		return tilez;
+	}
+	public ArrayList<Tile> getTiles() {
+		ArrayList<Tile> tilez = new ArrayList<>();
+		for (int i = 0; i < tiles.size(); i++) {
+			tilez.add(tiles.get(i));
+		}
+		return tilez;
 	}
 	
 }

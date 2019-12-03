@@ -3,6 +3,7 @@ package tiles;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Image;
+import java.util.ArrayList;
 
 import characters.*;
 import extras.*;
@@ -35,6 +36,10 @@ public class Tile {
 	public boolean isCrossable;
 	/** a Tile isGround if it has no specific terrain effects and isCrossable*/
 	public boolean isGround;
+	/**needed for path finding algorithm*/
+	public int f, g, h;
+	public ArrayList<Tile> neighbors;
+	public Tile previous;
 	
 	public Tile(int x, int y, ChapterMap map) {
 		this.x = x;
@@ -43,6 +48,8 @@ public class Tile {
 		this.yPos = y;
 		this.map = map;
 		map.tiles.add(this);
+		neighbors = new ArrayList<>();
+		previous = null;
 	}
 	
 	public void setxPos(int xPos) {
@@ -59,7 +66,10 @@ public class Tile {
 		else return false;
 	}
 	public void render(Graphics g) {
-		if (arrow) {
+		if (arrowHead) {
+			g.drawImage(IM.getImage("/arrowHead.png"), xPos*scale+scale/4, yPos*scale+scale/4, scale/2, scale/2, null);
+			return;
+		}else if (arrow) {
 			g.setColor(Color.black);
 			g.fillRect(xPos * scale, yPos * scale, scale - 1, scale - 1);
 			if (carrier != null) carrier.render(g);
@@ -83,5 +93,23 @@ public class Tile {
 	}
 	public void setArrowHead(boolean tf) {
 		this.arrowHead = tf;
+	}
+	public void findNeighbors() {
+	
+		if (x < map.cols-1) {
+			neighbors.add(map.getTileAtAbsolutePos(x + 1, y));
+		}
+		if (x > 0) {
+			neighbors.add(map.getTileAtAbsolutePos(x - 1, y));
+		}
+		if (y < map.rows-1) {
+			neighbors.add(map.getTileAtAbsolutePos(x, y + 1));
+		}
+		if (y > 0) {
+			neighbors.add(map.getTileAtAbsolutePos(x, y - 1));
+		}
+	}
+	public String toSring() {
+		return x + "," + y;
 	}
 }

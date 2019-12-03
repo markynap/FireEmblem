@@ -3,10 +3,14 @@ package characters;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Image;
+import java.util.Random;
 
-import items.*;
-import tiles.*;
-import gameMain.*;
+import gameMain.Game;
+import items.CombatItem;
+import items.Fists;
+import items.Item;
+import items.Wallet;
+import tiles.Tile;
 /**
  * A player in this game
  * @author mark
@@ -61,8 +65,13 @@ public class Player {
 	public String teamID;
 	/**Damage this player can deal*/
 	public int damage;
+	public Color teamColor;
+	/** tracks the most recent level ups */
+	public boolean[] levelUps;
 	
-	public Player(String name, String Class, int[] stats, int[] growths, Game game, int xPos, int yPos, CombatItem equiptItem) {
+	public Random r;
+	
+	public Player(String name, String Class, String teamID, int[] stats, int[] growths, Game game, int xPos, int yPos, CombatItem equiptItem) {
 		this.game = game;
 		this.name = name;
 		this.Class = Class;
@@ -81,6 +90,7 @@ public class Player {
 		this.xPos = xPos;
 		this.yPos = yPos;
 		classBonuses = new int[6];
+		this.teamID = teamID;
 		setClassBonuses();
 		this.currentTile = game.chapterOrganizer.currentMap.getTileAtAbsolutePos(xPos, yPos);
 		setMasteryBonuses();
@@ -92,6 +102,11 @@ public class Player {
 		} else {
 			wallet.weapons.add(new Fists());
 		}
+		if (teamID.equalsIgnoreCase("Ally")) {
+			teamColor = Color.BLUE;
+		} else if (teamID.equalsIgnoreCase("Enemy")) {
+			teamColor = Color.RED;
+		}
 		EXP = 0;
 		currentHP = stats[0];
 		repOk();
@@ -99,6 +114,8 @@ public class Player {
 		canMove = true;
 		canAttack = true;
 		canUse = true;
+		levelUps = new boolean[growths.length];
+		r = new Random();
 	}
 	
 	public void tick() {
@@ -192,7 +209,7 @@ public class Player {
 	public void repOk() {
 		if (stats.length != 10) throw new IllegalArgumentException("Player must have 10 stats!");
 		for (int a : stats) if (a < 0) throw new IllegalArgumentException("Player cannot have negative stats");
-		
+		if (growths.length != 7) throw new IllegalArgumentException("Player must have 7 growth stats!");
 	}
 	
 	public Image getImage() {
@@ -214,7 +231,7 @@ public class Player {
 		canUse = tf;
 	}
 	public void drawScopeImage(Graphics g) {
-		g.setColor(Color.RED);
+		g.setColor(new Color(255,215,0));
 		int offSet = Game.scale/8;
 		int thickness = 2;
 		int width = Game.scale-(2*offSet);
@@ -270,8 +287,40 @@ public class Player {
 			System.out.println("LEVEL UPPP");
 			EXP = (EXP + exp) % 100;
 			level++;
+			stats[9]++;
 		} else {
 			EXP += exp;
 		}
+	}
+	public void levelUp() {
+		for (int i = 0; i < levelUps.length; i++) {
+			levelUps[i] = false;
+		}
+		int RNG = 0;
+		for (int i = 0; i < growths.length; i++) {
+			RNG = r.nextInt(101);
+			if (RNG <= growths[i]) {
+				stats[i]++;
+				levelUps[i] = true;
+			}
+		}
+		this.HP = stats[0];
+		this.STR = stats[1];
+		this.SK = stats[2];
+		this.SP = stats[3];
+		this.LCK = stats[4];
+		this.DEF = stats[5];
+		this.RES = stats[6];
+	}
+	public Color otherTeamColor(Color input) {
+		if (input == Color.RED) {
+			return Color.BLUE;
+		} else if (input == Color.BLUE) {
+			return Color.RED;
+		} else return Color.orange;
+	}
+	public boolean canMA() {
+		if (canAttack || canMove) return true;
+		else return false;
 	}
 }

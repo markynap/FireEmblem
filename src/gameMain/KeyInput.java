@@ -26,13 +26,20 @@ public class KeyInput extends KeyAdapter {
 	}
 
 	public void keyPressed(KeyEvent e) {
+		
+		
+		
 		key = e.getKeyChar();
 		keyCode = e.getExtendedKeyCode();
 		currentMap = game.chapterOrganizer.currentMap;
 		currentTile = currentMap.currentTile;
-
+		if (game.gameState == STATE.LoseGame) return;
+		
 		if (key == 's') {
-		if (game.pathGenerator != null)	game.pathGenerator.resetTiles();
+		if (game.pathGenerator != null)	{
+			game.pathGenerator.resetTiles();
+			game.pathGenerator.eraseScopes();
+		}
 		if (game.playerGFX!= null) game.playerGFX.setItemOptions(false);
 			game.setGameState(STATE.Game);
 		}
@@ -46,13 +53,13 @@ public class KeyInput extends KeyAdapter {
 			}
 			
 			if (key == 'n') {
-				game.chapterOrganizer.addAlly(new ExampleAlly(currentTile.x, currentTile.y, game));
+				game.addAlly(new ExampleAlly(currentTile.x, currentTile.y, game));
 			} else if (key == 'a') {
 				if (currentTile.carrier == null) return;
 				game.setPopUpMenu(new PopUpMenu(game, currentTile));
 				game.setGameState(STATE.PopUpMenu);
 			} else if (key == 'e') {
-				game.chapterOrganizer.addEnemy(new Brigand(currentTile.x, currentTile.y, game));
+				game.addEnemy(new Brigand(currentTile.x, currentTile.y, game));
 			}
 		} else if (game.gameState == STATE.Info) {
 			
@@ -111,6 +118,7 @@ public class KeyInput extends KeyAdapter {
 					if (!currentPlayer.canMove) return;
 					game.setPathGenerator(new PathGenerator(game, currentTile, currentPlayer.MOV));
 					game.pathGenerator.getAllTilesInRange();
+					game.chapterOrganizer.currentMap.selectedBoxTile = currentTile;
 					game.setGameState(STATE.MoveState);
 				} else if (game.PUM.selectedIndex == 1) { //item state
 					if (currentPlayer == null) return;
@@ -121,6 +129,7 @@ public class KeyInput extends KeyAdapter {
 					if (!currentPlayer.canAttack) return;
 					game.setPathGenerator(new PathGenerator(game, currentTile, currentPlayer.equiptItem.range));
 					game.pathGenerator.getAllTilesInRange();
+					game.chapterOrganizer.currentMap.selectedBoxTile = currentTile;
 					game.setGameState(STATE.AttackState);
 				} else if (game.PUM.selectedIndex == 3) { //Trade State
 					
@@ -129,6 +138,7 @@ public class KeyInput extends KeyAdapter {
 				} else if (game.PUM.selectedIndex == 4) { //Wait State
 					
 					if (currentPlayer == null) return;
+					currentPlayer.setMAU(false);
 					
 				} else if (game.PUM.selectedIndex == 5) { //End State
 					
@@ -172,6 +182,7 @@ public class KeyInput extends KeyAdapter {
 						//this is where we put in the logic for attacking
 						game.AttackManager.Attack(currentPlayer, opponent);
 						game.pathGenerator.resetTiles();
+						game.pathGenerator.eraseScopes();
 						game.setGameState(STATE.Game);
 						
 					}
@@ -206,16 +217,20 @@ public class KeyInput extends KeyAdapter {
 		Tile arrowTile;
 		if (keyCode == KeyEvent.VK_RIGHT) {
 			arrowTile = game.chapterOrganizer.currentMap.getTileAtAbsolutePos(game.pathGenerator.getTopTile().x + 1, game.pathGenerator.getTopTile().y);
-			game.pathGenerator.setTileArrow(arrowTile, !arrowTile.arrow);
+			game.pathGenerator.setTileArrow(arrowTile);
+			game.chapterOrganizer.currentMap.selectedBoxTile = arrowTile;
 		} else if (keyCode == KeyEvent.VK_LEFT) {
 			arrowTile = game.chapterOrganizer.currentMap.getTileAtAbsolutePos(game.pathGenerator.getTopTile().x - 1, game.pathGenerator.getTopTile().y);
-			game.pathGenerator.setTileArrow(arrowTile, !arrowTile.arrow);
+			game.pathGenerator.setTileArrow(arrowTile);
+			game.chapterOrganizer.currentMap.selectedBoxTile = arrowTile;
 		} else if (keyCode == KeyEvent.VK_UP) {
 			arrowTile = game.chapterOrganizer.currentMap.getTileAtAbsolutePos(game.pathGenerator.getTopTile().x, game.pathGenerator.getTopTile().y - 1);
-			game.pathGenerator.setTileArrow(arrowTile, !arrowTile.arrow);
+			game.pathGenerator.setTileArrow(arrowTile);
+			game.chapterOrganizer.currentMap.selectedBoxTile = arrowTile;
 		} else if (keyCode == KeyEvent.VK_DOWN) {
 			arrowTile = game.chapterOrganizer.currentMap.getTileAtAbsolutePos(game.pathGenerator.getTopTile().x, game.pathGenerator.getTopTile().y + 1);
-			game.pathGenerator.setTileArrow(arrowTile, !arrowTile.arrow);
+			game.pathGenerator.setTileArrow(arrowTile);
+			game.chapterOrganizer.currentMap.selectedBoxTile = arrowTile;
 		}
 	}
 	private void moveAttackTile() {
@@ -223,15 +238,19 @@ public class KeyInput extends KeyAdapter {
 		if (keyCode == KeyEvent.VK_RIGHT) {
 			arrowTile = game.chapterOrganizer.currentMap.getTileAtAbsolutePos(game.pathGenerator.getTopTile().x + 1, game.pathGenerator.getTopTile().y);
 			game.pathGenerator.drawTilePath(arrowTile);
+			game.chapterOrganizer.currentMap.selectedBoxTile = arrowTile;
 		} else if (keyCode == KeyEvent.VK_LEFT) {
 			arrowTile = game.chapterOrganizer.currentMap.getTileAtAbsolutePos(game.pathGenerator.getTopTile().x - 1, game.pathGenerator.getTopTile().y);
 			game.pathGenerator.drawTilePath(arrowTile);
+			game.chapterOrganizer.currentMap.selectedBoxTile = arrowTile;
 		} else if (keyCode == KeyEvent.VK_UP) {
 			arrowTile = game.chapterOrganizer.currentMap.getTileAtAbsolutePos(game.pathGenerator.getTopTile().x, game.pathGenerator.getTopTile().y - 1);
 			game.pathGenerator.drawTilePath(arrowTile);
+			game.chapterOrganizer.currentMap.selectedBoxTile = arrowTile;
 		} else if (keyCode == KeyEvent.VK_DOWN) {
 			arrowTile = game.chapterOrganizer.currentMap.getTileAtAbsolutePos(game.pathGenerator.getTopTile().x, game.pathGenerator.getTopTile().y + 1);
 			game.pathGenerator.drawTilePath(arrowTile);
+			game.chapterOrganizer.currentMap.selectedBoxTile = arrowTile;
 		}
 	}
 }

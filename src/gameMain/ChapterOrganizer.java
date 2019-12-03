@@ -21,7 +21,6 @@ public class ChapterOrganizer {
 	/**All the enemys in this game will be stored here */
 	public LinkedList<EnemyPlayer> enemys = new LinkedList<>();
 
-	
 	public ChapterOrganizer(Game game) {
 		this.game = game;
 		allys = new LinkedList<>();
@@ -31,7 +30,6 @@ public class ChapterOrganizer {
 		currentChapter = 1;
 		currentMap = chapters[0];
 		currentMap.setTile(currentMap.getTileAtAbsolutePos(7, 8), new TreeTile(7, 8, currentMap));
-	
 	}
 	
 	public ChapterMap getChapterMap() {
@@ -44,6 +42,7 @@ public class ChapterOrganizer {
 	}
 	
 	public void tick() {
+		if (allys.size() == 0) game.loseGame();
 		currentMap.tick();
 		for (int i = 0; i < allys.size(); i++) {
 			allys.get(i).tick();
@@ -51,6 +50,8 @@ public class ChapterOrganizer {
 		for (int i = 0; i < enemys.size(); i++) {
 			enemys.get(i).tick();
 		}
+		if (noMAU(currentMap.currentPhase)) currentMap.nextPhase();
+		if (currentMap.currentPhase.equalsIgnoreCase("EnemyPhase")) game.enemyTurn();
 	}
 	
 	public void render(Graphics g) {
@@ -70,6 +71,27 @@ public class ChapterOrganizer {
 		enemys.add(enemy);
 		currentMap.getTileAtAbsolutePos(enemy.xPos, enemy.yPos).setCarrier(enemy);
 	}
-
+	/**
+	 * Evaluates each player depending on the phase passed in, if every player has no Move Attack or Uses, returns true
+	 * @param phaseID the team phase
+	 * @return
+	 */
+	public boolean noMAU(String phaseID) {
+		int count = 0;
+		if (phaseID.equalsIgnoreCase("AllyPhase")) {
+			for (int i = 0; i < allys.size(); i++) {
+				if (!allys.get(i).canMA()) count++;
+			}
+			if (count == allys.size()) return true;
+			else return false;
+		} else if (phaseID.equalsIgnoreCase("EnemyPhase")) {
+			for (int i = 0; i < enemys.size(); i++) {
+				if (!enemys.get(i).canMA()) count++;
+			}
+			if (count == enemys.size()) return true;
+			else return false;
+		}
+		return false;
+	}
 }
 
