@@ -4,11 +4,15 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.util.ArrayList;
-import java.util.LinkedList;
+import java.util.Iterator;
 
+import characters.AllyPlayer;
 import characters.Player;
 import gameMain.Game.STATE;
-import tiles.*;
+import graphics.AttackMenu;
+import tiles.GrassTile;
+import tiles.Tile;
+import tiles.Village;
 
 /**
  * A tile map that will be used to play chapters on Also renders all the tiles
@@ -36,6 +40,9 @@ public class ChapterMap {
 	public String currentPhase;
 	public Game game;
 	public Tile selectedBoxTile;
+	
+	public boolean inAttackMenu;
+	public AttackMenu attackMenu;
 
 	public ChapterMap(int col, int row, Game game) {
 		this.game = game;
@@ -47,6 +54,7 @@ public class ChapterMap {
 			for (int j = 0; j < col; j++) {
 				GrassTile grass = new GrassTile(j, i, this);
 				tileMap[i][j] = grass;
+				tiles.add(grass);
 			}
 		}
 		for (int i = 0; i < tiles.size(); i++) {
@@ -66,15 +74,47 @@ public class ChapterMap {
 	
 	}
 	
+	public void findAllyWithMoves() {
+		Player p = currentTile.carrier;
+		for (int i = 0; i < game.chapterOrganizer.allys.size(); i++) {
+			AllyPlayer ally = game.chapterOrganizer.allys.get(i);
+			if (ally.canMove && ally != p) {
+				int xDist = currentTile.x - ally.xPos;
+				int yDist = currentTile.y - ally.yPos;
+				int currentX = currentTile.x;
+				int currentY = currentTile.y;
+				for (int j = 0; j < Math.abs(xDist); j++) {
+					if (xDist < 0) setCurrentTile(getTileAtAbsolutePos(currentX + j, currentY));
+					else  setCurrentTile(getTileAtAbsolutePos(currentX - j, currentY));
+				}
+				for (int j = 0; j < Math.abs(yDist); j++) {
+					if (yDist < 0)  setCurrentTile(getTileAtAbsolutePos(currentX, currentY + j));
+					else  setCurrentTile(getTileAtAbsolutePos(currentX, currentY - j));
+				}
+				setCurrentTile(ally.currentTile);
+				findRegion();
+				
+			}
+		}
+	}
+	
 	public void move(Player p, Tile destTile) {
 		Tile prevTile = p.currentTile;
-		if (prevTile == destTile) return;
-		p.xPos = destTile.xPos;
-		p.yPos = destTile.yPos;
+		if (prevTile.placeEquals(destTile)) return;
+		if (destTile.isOccupied()) {
+			System.out.println("Cannot move to occupied tile!");
+			return;
+		}
+		p.xPos = destTile.x;
+		p.yPos = destTile.y;
 		p.setCurrentTile(destTile);
 		destTile.setCarrier(p);
 		prevTile.setCarrier(null);
 		p.setCanMove(false);
+		if (destTile.category.equalsIgnoreCase("Village")) {
+			Village vill  = (Village)destTile;
+			vill.visit(p);
+		}
 	}
 	
 	public void nextTurn() {
@@ -82,17 +122,23 @@ public class ChapterMap {
 		for (int i = 0; i < game.chapterOrganizer.allys.size(); i++) {
 			game.chapterOrganizer.allys.get(i).populateMAU();;
 		}
+		currentPhase = "AllyPhase";
 		for (int i = 0; i < game.chapterOrganizer.enemys.size(); i++) {
 			game.chapterOrganizer.enemys.get(i).populateMAU();;
 		}
-		currentPhase = "AllyPhase";
 	}
 	
 	public void nextPhase() {
-		if (currentPhase.equalsIgnoreCase("AllyPhase")) {
-		currentPhase = "EnemyPhase";
-		} else {
-			nextTurn();
+		if (game.gameState == STATE.Game) {
+			if (currentPhase.equalsIgnoreCase("AllyPhase")) {
+				for (AllyPlayer a : game.chapterOrganizer.allys) a.setMAU(false); 
+				currentPhase = "EnemyPhase";
+				game.enemyMove.setDestTileMap();
+				game.setGameState(STATE.EnemyPhase);
+				
+			} else {
+				nextTurn();
+			}
 		}
 	}
 
@@ -108,6 +154,7 @@ public class ChapterMap {
 		} else {
 		drawSelectedBox(g);
 		}
+		if (attackMenu != null) attackMenu.render(g);
 	}
 	
 	public void drawHUD(Graphics g) {
@@ -213,7 +260,7 @@ public class ChapterMap {
 		if (moveRight) {
 			//need to check if on the rightmost side, if we are do not move the screen
 			//if we are on the right half of the map we should move the screen
-			if (bottomRight.x == (rows - 1)) {
+			if (bottomRight.x >= (cols - 1)) {
 				this.currentTile = t;
 				return;
 			}
@@ -262,7 +309,7 @@ public class ChapterMap {
 			}
 			
 		} else if (moveDown) {
-			if (bottomRight.y == (cols - 1)) {
+			if (bottomRight.y >= (rows - 1)) {
 				this.currentTile = t;
 				return;
 			}
@@ -280,25 +327,21 @@ public class ChapterMap {
 	}
 
 	public void findRegion() {
-		Tile st = currentTile;
-		int xp = 12 - Math.min(0, 6 - st.xPos);
+		int xp = 12 - Math.min(0, 6 - currentTile.xPos);
 		if (xp > nrow - 1) {
 			xp = nrow -1;
 		}
-		int yp =  10 - Math.min(0, 5 - st.yPos);
+		int yp =  10 - Math.min(0, 5 - currentTile.yPos);
 		if (yp > ncol - 1) {
 			yp = ncol -1;
 		}
 		Tile newRight = getTileAtCurrentPos(xp, yp);
-		Tile newLeft = getTileAtCurrentPos(Math.max(0, bottomRight.xPos-12), Math.max(0, bottomRight.yPos-10));
+	//	Tile newLeft = getTileAtCurrentPos(Math.max(0, bottomRight.xPos-12), Math.max(0, bottomRight.yPos-10));
+		Tile newLeft = getTileAtCurrentPos(Math.max(0, xp-12), Math.max(0, yp-10));
 		if (setBottomRight(newRight)) {
 			if (setTopLeft(newLeft)) {
 				
-			} else {
-				System.out.println("top left dont work in findRegion");
 			}
-		} else {
-			System.out.println("bottom right not work in findRegion");
 		}
 	}
 	/**
@@ -333,7 +376,26 @@ public class ChapterMap {
 	}
 	/** Sets the existing Tile to be of the type newTile*/
 	public void setTile(Tile existingTile, Tile newTile) {
-		tileMap[existingTile.x][existingTile.y] = newTile;
+		if (newTile == null) return;
+		if (existingTile == null) return;
+		if (existingTile.x >= cols) return;
+		if (existingTile.y >= rows) return;
+		Player p = existingTile.carrier;
+		if (p!= null) newTile.setCarrier(p);
+		tileMap[existingTile.y][existingTile.x] = newTile;
+		
+		replace(existingTile, newTile);
+		newTile.setxPos(existingTile.xPos);
+		newTile.setyPos(existingTile.yPos);
+		existingTile = newTile;
+		
+	}
+	/** Sets the existing Tile to be of type newTile and contains player player*/
+	public void setTile(Tile existingTile, Tile newTile, Player player, ChapterOrganizer org) {
+		setTile(existingTile, newTile);
+		//if (player != null) game.chapterOrganizer.addPlayer(player);
+		if (player != null) org.addPlayer(player);
+		tileMap[existingTile.y][existingTile.x].setCarrier(player);
 	}
 	
 	public void drawSelectedBoxOnTile(Tile currentTile, Graphics g) {
@@ -373,4 +435,36 @@ public class ChapterMap {
 		return tilez;
 	}
 	
+	public Tile findTileForDesigner(int x, int y) {
+		for (Tile[] tileRow : tileMap) {
+			for (Tile t : tileRow) {
+				if (t.x == x && t.y == y) return t;
+			}
+		}
+		System.out.println("No tile for designer at " + x + "," + y);
+		return tileMap[x][y];
+	}
+	
+	public void replace(Tile out, Tile in) {
+		if (out == null || in == null) throw new RuntimeException("Cannot replace null elements!");
+		Iterator<Tile> tileIt = tiles.iterator();
+		int count = 0;
+		while (tileIt.hasNext()) {
+			Tile temp = tileIt.next();
+			if (temp == out) {
+				tileIt.remove();
+				tiles.add(count, in);
+				return;
+			}
+			count++;
+		}
+	}
+	public void setAttackMenu(AttackMenu menu) {
+		this.attackMenu = menu;
+		this.inAttackMenu = true;
+	}
+	public void nullAttackMenu() {
+		this.attackMenu = null;
+		inAttackMenu = false;
+	}
 }
