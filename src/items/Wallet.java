@@ -20,7 +20,9 @@ public class Wallet {
 	
 	public void addItem(Item item) {
 		if (item.category.equalsIgnoreCase("Utility")) {
-			utilities.add((UtilityItem)item);
+			UtilityItem it = (UtilityItem)item;
+			it.carrier = holder;
+			utilities.add(it);
 		} else {
 			weapons.add((CombatItem) item);
 		}

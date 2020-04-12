@@ -1,7 +1,10 @@
 package items;
 
+import characters.Player;
+
 public class UtilityItem extends Item{
 	
+	public Player carrier;
 	public String description;
 	
 	public UtilityItem(String name, String description, int effectiveness, int weight, int duration) {

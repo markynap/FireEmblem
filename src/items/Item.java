@@ -6,6 +6,7 @@ import extras.*;
 import gameMain.*;
 
 public abstract class Item {
+	
 	public final static String[] weaponTypes = {"Swords", "Lances", "Axes", "Bows"};
 	/**What this item is called*/
 	public String name;
@@ -19,7 +20,10 @@ public abstract class Item {
 	public int duration;
 	/**The image manager that will handle rendering item images*/
 	public ImageManager IM = Game.IM;
+	/** The image path to the item */
 	public String imagePath;
+	
+	public int uniqueID;
 	
 	public Image getImage(String path) {
 		return IM.getImage(path);
