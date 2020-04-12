@@ -1,0 +1,25 @@
+PLAYER STATS SAVE STATE FILE INFORMATION:
+
+Players will have Each GameLoad state saved:
+First list of stats and items will be for a NEW GAME
+Second for first load save
+Third for second load save
+Fourth for third load save
+
+Each difference in load saves will be denoted by LOAD_LEVEL (numLevel)
+
+Layout:
+LOAD_LEVEL - 1
+ISALIVE (0d -1a) - 2
+HP - 2 : GROWTH
+STR - 3 : GROWTH
+SK - 4 : GROWTH
+SP - 5 : GROWTH
+LCK - 6 : GROWTH
+DEF - 7 : GROWTH
+RES - 8 : GROWTH
+MOV - 9
+CON - 10
+LEVEL - 11
+EXP - 12
+WEAPON_MASTERY_GRADE 1-4 (F-S) : WEAPON_MASTERY 1-4 (number) (13 - 16)
