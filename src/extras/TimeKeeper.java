@@ -23,18 +23,18 @@ public class TimeKeeper {
 		tempTime = 0;
 	}
 	public double getGameTime() {
-		return ((System.currentTimeMillis() - gameTime)/1000);
+		return ((double)(System.currentTimeMillis() - gameTime)/1000);
 	}
 	
 	public double sessionAt() {
-		return ((System.currentTimeMillis() - currentTime)/1000);
+		return ((double)(System.currentTimeMillis() - currentTime)/1000);
 	}
 	public boolean sessionAtDesiredTime(double desiredSeconds) {
 		return (sessionAt() >= desiredSeconds);
 	}
 	
 	public double newSessionAt() {
-		return ((System.currentTimeMillis() - tempTime)/1000);
+		return (double)((System.currentTimeMillis() - tempTime)/1000);
 	}
 	public boolean newSessionAtDesiredTime(double desiredSeconds) {
 		return (newSessionAt() >= desiredSeconds);

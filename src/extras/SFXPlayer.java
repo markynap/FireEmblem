@@ -1,6 +1,7 @@
 package extras;
 
 import java.util.ArrayList;
+import java.util.TreeMap;
 
 public class SFXPlayer implements Runnable{
 	
@@ -9,13 +10,20 @@ public class SFXPlayer implements Runnable{
 	private boolean running;
 	public AudioFile song;
 	public AudioFile tempSong;
+	private TreeMap<Integer, Integer> songToVolume;
 	
 	public SFXPlayer(String...files) {
 		musicFiles = new ArrayList<>();
+		songToVolume = new TreeMap<>();
 		currentSFXIndex = 0;
 		for (String file : files) {
 			musicFiles.add(new AudioFile("./res/" + file+ ".wav"));
 		}
+		songToVolume.put(0, -9);
+		songToVolume.put(1, -5);
+		songToVolume.put(2, -9);
+		songToVolume.put(3, 3);
+		songToVolume.put(4, -5);
 	}
 	@Override
 	public void run() {
@@ -31,12 +39,23 @@ public class SFXPlayer implements Runnable{
 	}
 	public void playSong(int index) {
 		song = musicFiles.get(index);
-		int val = 0;
-		if (index == 0) val = -9;
-		if (index == 1) val = -5;
-		if (index == 2) val = -9;
-		if (index == 4) val = 3;
-		song.play(val);
+		song.play(songToVolume.get(index));
+	}
+	//"Cursor", "LevelUp", "Select", "Experience", "GameOver"
+	public void playCursor() {
+		playSong(0);
+	}
+	public void playLevelUp() {
+		playSong(1);
+	}
+	public void playSelect() {
+		playSong(2);
+	}
+	public void playExperience() {
+		playSong(3);
+	}
+	public void playGameOver() {
+		playSong(4);
 	}
 	public void setSFXIndex(int index) {
 		if (index < musicFiles.size())
