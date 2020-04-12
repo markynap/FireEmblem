@@ -43,7 +43,15 @@ public class PathGenerator {
 		for (int i = 0; i < map.tiles.size(); i++) {
 			Tile t = map.tiles.get(i);
 			if ((Math.abs(startTile.x - t.x) + Math.abs(startTile.y - t.y)) <= move) {
-				t.setPathable(true);
+				if (t.isCrossable) {
+					if (t.carrier == null) {
+						t.setPathable(true);						
+					} else {
+						if (player.teamID.equalsIgnoreCase(t.carrier.teamID)) {
+							t.setPathable(true);
+						}
+					}
+				}
 			}
 		}
 	//	map.currentTile.setPathable(false);
