@@ -1,10 +1,11 @@
 package tiles;
 
+import java.awt.Color;
 import java.awt.Graphics;
 
 import gameMain.ChapterMap;
 
-public class TreeTile extends Tile{
+public class TreeTile extends GrassTerrainTile{
 
 	public TreeTile(int x, int y, ChapterMap map) {
 		super(x, y, map);
@@ -12,10 +13,8 @@ public class TreeTile extends Tile{
 		image = IM.getImage("/tree.png");
 		this.isGround = false;
 		this.isCrossable = true;
+		terrainBonuses[0] = 1;
+		terrainBonuses[1] = 10;
 	}
 	
-	public void render(Graphics g) {
-		g.drawImage(IM.getImage("/grass.png"), xPos * scale, yPos * scale, scale, scale, null);
-		g.drawImage(image, xPos * scale, yPos * scale, scale, scale, null);
-	}
 }

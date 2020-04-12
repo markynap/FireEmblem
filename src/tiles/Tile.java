@@ -5,9 +5,10 @@ import java.awt.Graphics;
 import java.awt.Image;
 import java.util.ArrayList;
 
-import characters.*;
-import extras.*;
-import gameMain.*;
+import characters.Player;
+import extras.ImageManager;
+import gameMain.ChapterMap;
+import gameMain.Game;
 
 public class Tile {
 	/** Where the tile is in terms of the current grid of tiles */
@@ -40,6 +41,10 @@ public class Tile {
 	public int f, g, h;
 	public ArrayList<Tile> neighbors;
 	public Tile previous;
+	/** DEF, AVOID */
+	public int[] terrainBonuses;
+	
+	public boolean enemySelected;
 	
 	public Tile(int x, int y, ChapterMap map) {
 		this.x = x;
@@ -47,19 +52,23 @@ public class Tile {
 		this.xPos = x;
 		this.yPos = y;
 		this.map = map;
-		map.tiles.add(this);
+	//	map.tiles.add(this);
 		neighbors = new ArrayList<>();
 		previous = null;
+		terrainBonuses = new int[2];
 	}
 	
 	public void setxPos(int xPos) {
 		this.xPos = xPos;
+		if (carrier != null) carrier.currentTile = this;
 	}
 	public void setyPos(int yPos) {
 		this.yPos = yPos;
+		if (carrier != null) carrier.currentTile = this;
 	}
 	public void setCarrier(Player p) {
 		carrier = p;
+		if (p != null) p.currentTile = this;
 	}
 	public boolean isOccupied() {
 		if (carrier != null) return true;
@@ -83,7 +92,10 @@ public class Tile {
 		}
 		g.drawImage(image, xPos *  scale, yPos * scale, scale-1, scale-1, null);
 		if (carrier != null) carrier.render(g);
-		
+		if (enemySelected) {
+			g.setColor(Color.red);
+			g.fillRect(xPos * scale, yPos * scale, scale - 1, scale - 1);
+		}
 	}
 	public void setPathable(boolean tf) {
 		pathable = tf;
@@ -95,7 +107,7 @@ public class Tile {
 		this.arrowHead = tf;
 	}
 	public void findNeighbors() {
-	
+		neighbors.clear();
 		if (x < map.cols-1) {
 			neighbors.add(map.getTileAtAbsolutePos(x + 1, y));
 		}
@@ -111,5 +123,15 @@ public class Tile {
 	}
 	public String toSring() {
 		return x + "," + y;
+	}
+	
+	public String getCarrierID() {
+		if (carrier == null) return "0";
+		else return String.valueOf(carrier.getID());
+	}
+
+	public boolean placeEquals(Tile otherTile) {
+		if (otherTile == null) return false;
+		return (x == otherTile.x && y == otherTile.y);
 	}
 }
