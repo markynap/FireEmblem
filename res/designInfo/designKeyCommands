@@ -1,0 +1,17 @@
+Bridge: b
+Fort: F
+Floor: f
+Mountain: m
+Throne: n
+Door: d
+Pillar: p
+Stairs: S
+Tree: t
+Chest: T
+Village: v
+Water: w
+Wall: Space
+Armory: A
+Vendor: V
+Mud: u
+DamagedWall: D

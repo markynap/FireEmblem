@@ -1,0 +1,21 @@
+STEPS FOR ADDING A UNIT:
+
+ALLY:
+Create Class with a Unique NAME
+Create a file of that EXACT name in res//res_characters
+	- follow standard Ally file conventions, 4 copies of 27 rows containing data
+Add a unique ID to res//res_characters//playerIDs
+Add them to the Game "getPlayerByID()" method in order for them to be deployable
+Add Promotional Options
+
+ENEMY:
+Create Class with unique Name and Class
+Add their base information to res//res_characters//enemyBaseStats - based on their name
+Add a unique ID to res//res_characters//playerIDs
+Add them to the Game "getPlayerByID()" method in order for them to be deployable
+Add random generated switch case in Player class for spawning
+
+Item:
+Create unique Class
+Add unique ID to res//designInfo//weaponIDs
+add creation method to Item and randomize 

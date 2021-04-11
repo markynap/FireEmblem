@@ -1,0 +1,124 @@
+Gameplay:option
+This is a remake of the classic GameBoy Advanced Fire Emblem series, FE6-8
+I have pulled characters from many other games, however the flow/feel should be similar
+to its true inspiration of FE7 The Blazing Blade. This game is solely played on computers
+so the key commands are important to remember:
+A = Action Key
+S = Back Key
+W = Info Key
+Q = Switch Ally Key
+Enter = A for people to play with right hand
+` (Tilde) = Minimap view key (while in a chapter)
+Arrow Keys = ability to traverse around the game and highlight options
+There is no mouse input in this game, so only key commands will be recognized.
+The goal of this game is to train your units through combat to strengthen them,
+so they can accomplish their goal while fighting tougher units each chapter
+Units attack with Items found in their inventory by pressing W over them
+Once all red units are dead, or the chapter goal has been fulfiled, the chapter ends
+At chapters end you will be prompted to save over 3 separate save locations
+ENDTUTORIAL
+Units:option
+There are several units available in this FE remake, all bringing something special to the fight.
+A unit dies when their HP reaches 0, removing them permanently from the game.
+Unless you are in Easy Mode where units respawn when dead, a player dies for good.
+When looking at what makes a unit "good", a few things should be kept in mind
+How strong do their base stats compare to other units of the same level?
+How good are their growth rates, found by going into their inventory and pressing q
+Stat and growth rate information can be found in the Stats/Growths Tutorial option
+How much movement do they have? And is their skill something I can utilize well each chapter?
+As the game progresses, larger portions of your army will not be allowed to participate in battle.
+You must choose the specific team you think you want to dominate with and train them
+If a unit is below level 20, they are considered unpromoted, meaning once they reach
+level 20 they will be offered two paths to take, which greatly increase their stats
+and will permanently change their Class and potentially their Skill, as well as offer cool benefits
+Unpromoted units, although weaker, are often stronger lategame than already promoted units
+Because they get access to a crazy stat boost on promotion
+ENDTUTORIAL
+Classes:option
+There are several playable and offensive Classes available in Fire Emblem.
+Some of these include Cavalier, Archer, and Mage. A player's Class does not
+Control too much in itself, but there are some benefits and detriments to certain classes.
+Certain Classes have skills and movement tied to them, units of this class share it
+For example, Cavaliers have Momento granting them extra movement since they are mounted.
+Additionally, a player's class will give them a certain starting weapon Grade.
+Meaning that if a unit uses the weapon they are proficient in, they will get benefits in combat
+Cavaliers start with a proficiency in Swords and Lances, while Archers are proficient in Bows
+Depending on what your army is lacking in, certain classes may be more desirable than others.
+ENDTUTORIAL
+Attacking:option
+Two units attacking each other is the primary force driving the chapters forward in Fire Emblem
+To see how well a unit will perform against another, highlight that unit, move within range
+of an enemy, select a weapon to attack and highlight the enemy, a box should appear
+detailing essential data to keep track of when evaluating how good an Attack will do
+HP - How healthy each player currently is, will be expressed as CurrentHP / MaxHP
+Hit - the % chance that this player will land a successful strike on his opponent
+DMG - How much damage will be done to the opposing player if the hit lands
+CRIT - the % chance this strike (if it lands) will do 3x damage to the opponent
+This menu is not always present, however, during EnemyPhase you cannot control
+who attacks whom, so you might need to make observations yourself by pressing W
+over enemies and observing their Hit, Avoid, Crit, HP, and Damage
+Damage is calculated as a units STR/MAG + weapon damage - opponent DEF/RES
+Hit's calculation is more complex, involving some skill, a little luck, CON and weapon weight,
+but most importantly the full "Hit" attribute of the Item you/they are attacking with.
+Avoid is a mix of speed, some luck, and how large you are compared to the item wielded
+To calculate the Hit % you will have take your Hit - Opponent Avoid
+Be sure to keep in mind the Weapon Triangle, which affects Damage Hit and Crit!
+ENDTUTORIAL
+Chapter Objectives:option
+Chapter Objective Tutorial coming soon!
+ENDTUTORIAL
+Stats/Growths:option
+Each playable Player in the game has a unique set of base stats and growth rates
+Base stats are the stats the player starts the game with when they are first spawned in.
+The stats go in this order and do the following
+HP - health of the player, dead if this reaches 0
+STR/MAG - Strength or Magic of player, how much damage this player will deal on their own
+SK - Skill, how accurate this player is while wielding weapons
+SP - Speed, how fast/agile this player is
+LCK - Luck, how lucky this player is, affects several different things
+DEF - Defense, how resistant this player is to physical damage
+RES - Resistance, how resistant this player is to magical damage
+CON - Constitution, the size of the player, affects how effective they use heavy weapons
+MOV - Movement, how many tiles this player can move each turn
+LV - Level, this unit will promote once they reach level 20
+Growth Rates are the chance that each stat will increase when the player levels up
+Once a Player's EXP reaches 100 (typically through combat) that player will level up
+They will have a certain chance of leveling up each stat, this is what growth rates dictate
+If a user has a 50% growth rate, then each level up that stat has a 1 out of 2 chance of adding 1
+ENDTUTORIAL
+Items:option
+Item Tutorial Coming Soon!
+include info on weapon types and weapon masteries
+ENDTUTORIAL
+Skills:option
+Each Player has a unique skill associated with them
+These skills can be passive, activatable, or turn based
+Activatable skills can be cast once per chapter and include Confession and Teleportation.
+Passive skills can occur multiple times per chapter, but have a certain chance of occurring
+Turn based skills do something at the start of each turn, but are not chance based
+Skills can be very useful when determining the usefulness of a player to your army
+ENDTUTORIAL
+Promotion:option
+Promotion tutorial coming soon!
+ENDTUTORIAL
+Weapon Triangle:option
+Certain Weapons achieve dominance over others in combat
+Remember this simple triangle to always have the advantage in combat:
+                                          Swords beat Axes
+                                          Axes beat Lances
+                                          Lances beat Swords
+Easy! That's the Physical Weapon Triangle, where bows are unaffected
+The Magical Weapon Triangle is similar but slightly different:
+                                          Fire beats Earth
+                                          Ice beats Fire
+                                          Earth beats Ice
+The only difference here is that Dark magic beats all other types!
+Use physical damage dealers with high resistance to combat Dark Mages and Druids
+Using the same weapon type against an enemy has no effect on combat
+ENDTUTORIAL
+Recruitable Units:option
+Recruitable Units Tutorial Coming Soon!
+ENDTUTORIAL
+Convoy:option
+Convoy Tutorial Coming Soon!
+ENDTUTORIAL

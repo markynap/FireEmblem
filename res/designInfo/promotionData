@@ -1,0 +1,209 @@
+Ike
+GreatLord:Lord:optionend
+4:2
+2:1
+1:1
+1:2
+0:2
+2:1
+0:0
+3:1
+2:0
+Lose Aether:Keep Aether
+Gain Momento:None
+END
+Nino
+Sage:Elementalist:optionend
+2:3
+2:1
+1:2
+1:2
+2:2
+0:0
+2:1
+1:1
+0:0
+Use Staffs:A rank in all magic
+Lose Higher Learning:Lose Higher Learning
+Gain Divine Wellness:Gain Teraform
+END
+Kent
+Paladin:General:optionend
+2:5
+1:1
+1:2
+2:1
+2:0
+1:4
+0:0
+1:-2
+1:4
+Keep Momento:Lose Momento
+None:Gain Great Shield
+END
+Raymond
+Sage:Bishop:optionend
+2:2
+2:4
+1:0
+1:3
+2:4
+0:0
+2:1
+1:1
+0:0
+Use Weapons:+2 Range to all staves
+Lose Divine Blessing:Keep Divine Blessing
+Gain Divine Wellness:None
+END
+Evelynn
+Summoner:Druid:optionend
+1:3
+1:2
+1:2
+1:0
+0:0
+0:1
+2:2
+1:1
+0:1
+Lose Teleportation:Keep Teleportation
+Gain Summoning:Use Staves
+END
+Bard
+Dancer:Dancer:optionend
+2:2
+2:2
+2:2
+2:2
+2:2
+2:2
+1:1
+1:1
+0:0
+No Difference:No Difference
+END
+Florina
+PegasusKnight:FalconKnight:optionend
+1:5
+1:3
+3:0
+3:0
+4:0
+0:3
+4:0
+1:1
+0:3
+Keep Airbourne:Keep Airbourne
+END
+Hector
+AxeKing:GreatKnight:optionend
+3:3
+2:2
+1:0
+1:0
+2:0
+3:2
+0:1
+1:3
+2:4
+Keep Bone Crusher:Lose Bone Crusher
+None:Gain Momento
+END
+Volke
+Thief:Assassin:optionend
+1:1
+0:1
+1:2
+3:1
+4:1
+0:0
+0:0
+1:1
+0:1
+Keep Pick:Lose Pick
+None:Gain Assassination
+END
+Wolf
+Marksman:Ranger:optionend
+1:2
+2:1
+3:1
+2:1
+0:1
+0:1
+0:1
+1:3
+2:3
+Keep Sure Shot:Lose Sure Shot
++1 Bow Range:Gain Momento
+None:A rank in swords
+END
+Kahlan
+MotherConfessor:SuperConfessor:optionend
+5:5
+2:4
+1:2
+1:2
+2:2
+0:1
+2:1
+1:1
+1:1
+Lose Confession:Gain +5 Confession Range
+Gain Condar:None
+END
+Guy
+SwordMaster:Duelist:optionend
+3:5
+2:4
+3:1
+3:1
+3:2
+1:3
+2:3
+1:1
+1:2
+Nothing Yet:Keep Rage
+END
+Heath
+WyvernLord:WyvernMaster:optionend
+6:3
+3:2
+5:2
+0:3
+3:3
+2:1
+1:3
+1:2
+3:2
+Gain Bone Crusher:Gain Additional MOV
+END
+Merric
+Sage:Elementalist:optionend
+2:3
+2:1
+1:2
+1:2
+2:2
+0:0
+2:1
+1:1
+0:0
+Use Staffs:A rank in all magic
+Lose Higher Learning:Lose Higher Learning
+Gain Divine Wellness:Gain Teraform
+END
+Priscilla
+Valkyrie:Paladin
+2:5
+2:2
+1:2
+2:1
+4:0
+1:3
+3:1
+1:1
+1:3
+Learn Fire Magic:Lose all magic/staves
+None:Use Physical Weapons
